@@ -33,6 +33,9 @@ Tip
 echo $targetdomain | amass enum -passive -d  | sort -u | httprobe -c 70 -p 80,443,8080,8081,8089 | tee http_https.txt
 cat http_https.txt | corsme -t 70
 ```
+## Screenshot
+[!1414](https://github.com/Shivangx01b/CorsMe/blob/master/static/action.png)
+
 ## Note:
 
 - Scanner stores the error results as "error_requests.txt"... which contains hosts which cannot be requested
