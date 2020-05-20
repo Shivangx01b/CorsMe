@@ -26,12 +26,12 @@ echo "https://example.com" | ./Corsme
 ```
 Multiple Url
 ```plain
-cat http_https.txt | CorsMe -t 70
+cat http_https.txt | ./CorsMe -t 70
 ```
 Tip
 ```plain
 echo $targetdomain | amass enum -passive -d  | sort -u | httprobe -c 70 -p 80,443,8080,8081,8089 | tee http_https.txt
-cat http_https.txt | CorsMe -t 70
+cat http_https.txt | ./CorsMe -t 70
 ```
 ## Screenshot
 ![1414](https://github.com/Shivangx01b/CorsMe/blob/master/static/action.png)
