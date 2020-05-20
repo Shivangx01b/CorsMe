@@ -30,7 +30,7 @@ cat http_https.txt | CorsMe -t 70
 ```
 Tip
 ```plain
-echo $targetdomain | amass enum -passive -d  | sort -u | httprobe -c 70 -p 80,443,8080,8081,8089 | tee http_https.txt
+cat subdomains.txt | httprobe -c 70 -p 80,443,8080,8081,8089 | tee http_https.txt
 cat http_https.txt | CorsMe -t 70
 ```
 ## Screenshot
