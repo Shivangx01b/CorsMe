@@ -34,7 +34,7 @@ echo $targetdomain | amass enum -passive -d  | sort -u | httprobe -c 70 -p 80,44
 cat http_https.txt | corsme -t 70
 ```
 ## Screenshot
-[!1414](https://github.com/Shivangx01b/CorsMe/blob/master/static/action.png)
+![1414](https://github.com/Shivangx01b/CorsMe/blob/master/static/action.png)
 
 ## Note:
 
