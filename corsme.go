@@ -20,6 +20,7 @@ import (
 
 var f,  _ = os.Create("error_requests.txt")
 var Threads int
+var wildcard bool 
  
 
 func Banner() {
@@ -108,11 +109,13 @@ func parser(u string) ([]string,  error) {
 	return append(parsed, subdomain, domain, tld), nil 
 }
 
-func anyorigin() []string {
+func anyorigin(wildcard bool) []string {
 	origins := []string{
-		"*",
 		"http://shivangx01b.com",
 		"https://shivangx01b.com",
+	}
+	if wildcard == true {
+		origins = append(origins, "*")
 	}
 	return origins
 	
@@ -165,10 +168,10 @@ func spicalchars(things []string) []string {
 	return origins
 }
 
-func totalwaystotest(c *http.Client, u string, )  { 	
+func totalwaystotest(c *http.Client, u string, wildcard bool)  { 	
 	things, _ := parser(u)
 	
-	AnyOrigin := anyorigin()
+	AnyOrigin := anyorigin(wildcard)
 	requester(c, u, AnyOrigin)
 	
 	Prefix := prefix(things)
@@ -193,7 +196,8 @@ func totalwaystotest(c *http.Client, u string, )  {
 
 
 func ParseArguments() {
-	flag.IntVar(&Threads, "t", 40, "Number of workers to use..default 40")	
+	flag.IntVar(&Threads, "t", 40, "Number of workers to use..default 40")
+	flag.BoolVar(&wildcard, "wildcard", false, "If enabled..then * is checked in Access-Control-Allow-Origin")	
 	flag.Parse()
 }
 
@@ -226,7 +230,7 @@ func main() {
 		go func() {
 			defer processGroup.Done()
 			for u := range urls {
-				totalwaystotest(c, u)
+				totalwaystotest(c, u, wildcard)
 			}
 		}()
 	}
