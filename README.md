@@ -39,5 +39,7 @@ cat http_https.txt | corsme -t 70
 
 ## Idea for making this tools are taken from :
 -[CORScanner](https://github.com/chenjj/CORScanner)
+
 -[Corsy](https://github.com/s0md3v/Corsy)
+
 -[cors-blimey](https://github.com/tomnomnom/hacks/tree/master/cors-blimey)
