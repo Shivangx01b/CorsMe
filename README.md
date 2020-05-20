@@ -22,16 +22,20 @@ $ go get -u github.com/shivangx01b/CorsMe
 
 Single Url
 ```plain
-echo "https://example.com" | Corsme 
+echo "https://example.com" | ./Corsme 
 ```
 Multiple Url
 ```plain
-cat http_https.txt | CorsMe -t 70
+cat http_https.txt | ./CorsMe -t 70
+```
+Allow wildcard .. Now if Access-Control-Allow-Origin is * it will be printed
+```plain
+cat http_https.txt | ./CorsMe -t 70 --wildcard
 ```
 Tip
 ```plain
-cat subdomains.txt | httprobe -c 70 -p 80,443,8080,8081,8089 | tee http_https.txt
-cat http_https.txt | CorsMe -t 70
+cat subdomains.txt | ./httprobe -c 70 -p 80,443,8080,8081,8089 | tee http_https.txt
+cat http_https.txt | ./CorsMe -t 70
 ```
 ## Screenshot
 ![1414](https://github.com/Shivangx01b/CorsMe/blob/master/static/action.png)
