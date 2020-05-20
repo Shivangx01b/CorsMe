@@ -33,4 +33,11 @@ Tip
 echo $targetdomain | amass enum -passive -d  | sort -u | httprobe -c 70 -p 80,443,8080,8081,8089 | tee http_https.txt
 cat http_https.txt | corsme -t 70
 ```
+## Note:
 
+- Scanner stores the error results as "error_requests.txt"... which contains hosts which cannot be requested
+
+## Idea for making this tools are taken from :
+-[CORScanner](https://github.com/chenjj/CORScanner)
+-[Corsy](https://github.com/s0md3v/Corsy)
+-[cors-blimey](https://github.com/tomnomnom/hacks/tree/master/cors-blimey)
