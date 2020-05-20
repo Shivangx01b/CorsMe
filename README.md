@@ -1,3 +1,7 @@
+<h1 align="center">
+  <a href="https://goreportcard.com/report/github.com/Shivangx01b/CorsMe"><img src="https://goreportcard.com/badge/github.com/Shivangx01b/CorsMe"></a>
+</h1>
+
 ## What is CorsMe ?
 A cors misconfiguration scanner tool based on golang with speed and precision in mind !
 
