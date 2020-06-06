@@ -43,6 +43,10 @@ Allow wildcard .. Now if Access-Control-Allow-Origin is * it will be printed
 ```plain
 cat http_https.txt | ./CorsMe -t 70 --wildcard
 ```
+Add header if required
+```plain
+cat http_https.txt | ./CorsMe -t 70 -wildcard -header "Cookie: Session=12cbcx...."
+```
 Tip
 ```plain
 cat subdomains.txt | ./httprobe -c 70 -p 80,443,8080,8081,8089 | tee http_https.txt
