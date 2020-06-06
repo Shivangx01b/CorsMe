@@ -15,11 +15,14 @@ import (
 	"github.com/fatih/color"
 	"github.com/briandowns/spinner"
 	"flag"
+	"strings"
+	"regexp"
 )
 
 
 var f,  _ = os.Create("error_requests.txt")
 var Threads int
+var header string
 var wildcard bool 
  
 
@@ -58,7 +61,26 @@ func getClient() *http.Client {          // taken from https://github.com/tomnom
 	}
 }
 
-func requester(c *http.Client, u string, origins []string) {
+func custom_header(c *http.Client, header string, req *http.Request) {
+	parse := strings.ReplaceAll(header, "\\n", "\n")
+	var h_name string
+	var v_name string
+	r := regexp.MustCompile(`(.*):\s(.*)`)
+	matches := r.FindStringSubmatch(parse)
+	for i, match := range matches {
+		if i == 1 {
+			h_name = match
+		}
+		if i == 2 {
+			v_name = match
+		}
+
+	}
+	req.Header.Set(h_name, v_name)
+}
+
+
+func requester(c *http.Client, u string, origins []string, header string) {
 	for _, p := range origins {
 
 		req, err := http.NewRequest("GET", u, nil)
@@ -66,7 +88,9 @@ func requester(c *http.Client, u string, origins []string) {
 			return
 		}
 		req.Header.Set("Origin", p)
-
+		if header != " " {
+			custom_header(c, header, req)
+		}
 		resp, err := c.Do(req)
 		if resp != nil {
 			io.Copy(ioutil.Discard, resp.Body)
@@ -168,29 +192,29 @@ func spicalchars(things []string) []string {
 	return origins
 }
 
-func totalwaystotest(c *http.Client, u string, wildcard bool)  { 	
+func totalwaystotest(c *http.Client, u string, wildcard bool, header string)  { 	
 	things, _ := parser(u)
 	
 	AnyOrigin := anyorigin(wildcard)
-	requester(c, u, AnyOrigin)
+	requester(c, u, AnyOrigin, header)
 	
 	Prefix := prefix(things)
-	requester(c, u, Prefix)
+	requester(c, u, Prefix, header)
 	
 	Suffix := suffix(things)
-	requester(c, u, Suffix)
+	requester(c, u, Suffix, header)
 	
 	Escaped := notescapedot(things)
-	requester(c, u, Escaped)
+	requester(c, u, Escaped, header)
 	
 	Null := null()
-	requester(c, u, Null)
+	requester(c, u, Null, header)
 
 	Third := thirdparties()
-	requester(c, u, Third)
+	requester(c, u, Third, header)
 
 	Specialchars := spicalchars(things)
-	requester(c, u, Specialchars)
+	requester(c, u, Specialchars, header)
 
 }
 
@@ -198,6 +222,7 @@ func totalwaystotest(c *http.Client, u string, wildcard bool)  {
 func ParseArguments() {
 	flag.IntVar(&Threads, "t", 40, "Number of workers to use..default 40")
 	flag.BoolVar(&wildcard, "wildcard", false, "If enabled..then * is checked in Access-Control-Allow-Origin")	
+	flag.StringVar(&header, "header",  " ", "Add any custom header if required")
 	flag.Parse()
 }
 
@@ -230,7 +255,7 @@ func main() {
 		go func() {
 			defer processGroup.Done()
 			for u := range urls {
-				totalwaystotest(c, u, wildcard)
+				totalwaystotest(c, u, wildcard, header)
 			}
 		}()
 	}
