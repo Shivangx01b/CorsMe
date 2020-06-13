@@ -57,7 +57,7 @@ cat http_https.txt | ./CorsMe -t 70
 
 - Scanner stores the error results as "error_requests.txt"... which contains hosts which cannot be requested
 
-## Idea for making this tools are taken from :
+## Ideas for making this tool are taken from :
 [CORScanner](https://github.com/chenjj/CORScanner)
 
 [Corsy](https://github.com/s0md3v/Corsy)
