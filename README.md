@@ -33,7 +33,7 @@ $ go get -u github.com/shivangx01b/CorsMe
 
 Single Url
 ```plain
-echo "https://example.com" | ./Corsme 
+echo "https://example.com" | ./CorsMe 
 ```
 Multiple Url
 ```plain
