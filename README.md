@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href=""><img src="https://github.com/Shivangx01b/CorsMe/blob/master/static/banner.png" alt="" width="500px;"></a>
+  <a href=""><img src="https://github.com/Shivangx01b/CorsMe/blob/master/static/banner2.png" alt="" width="500px;"></a>
   <br>
   CorsMe
   <br>
