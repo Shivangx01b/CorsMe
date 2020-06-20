@@ -39,7 +39,7 @@ func Banner() {
 	
 }
 
-func getClient() *http.Client {          // taken from https://github.com/tomnomnom/hacks/blob/master/cors-blimey/main.go
+func getClient() *http.Client {          
 	tr := &http.Transport{
 		MaxIdleConns:    30,
 		IdleConnTimeout: time.Second,
@@ -97,7 +97,7 @@ func requester(c *http.Client, u string, origins []string, header string) {
 			resp.Body.Close()
 		}
 		if err != nil {
-			w := bufio.NewWriter(f) //stores all the urls which cannot be resolved 
+			w := bufio.NewWriter(f)  
 			w.WriteString(u)
 			w.Flush()
 			return
@@ -167,7 +167,7 @@ func null() []string  {
 	return origins
 }
 
-func thirdparties() []string {           //taken from https://github.com/chenjj/CORScanner/blob/master/origins.json
+func thirdparties() []string {           
 	origins := []string{
 		"https://shivangx01b.github.io",
 		"http://jsbin.com",
@@ -231,7 +231,7 @@ func main() {
 	ParseArguments()
 	Banner()
 	color.HiBlue("\n[~] Total Tests.. 🛠")
-	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  //Just some shity effects 
+	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)   
 	s.Start()              
 	time.Sleep(2 * time.Second)                                  
 	s.Stop()
@@ -242,7 +242,7 @@ func main() {
 	color.HiYellow("\n[>] Null.. 🔍")
 	color.HiYellow("\n[>] Common ThirdParties.. 🔍")
 	color.HiYellow("\n[>] Special Chars.. 🔍")
-	s.UpdateCharSet(spinner.CharSets[4]) // Ahh shit.. here we go again
+	s.UpdateCharSet(spinner.CharSets[4]) 
 	s.Restart()
 	time.Sleep(2 * time.Second)
 	s.Stop()
