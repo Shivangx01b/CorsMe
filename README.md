@@ -52,7 +52,7 @@ cat http_https.txt | ./CorsMe -t 70 -wildcard -header "Cookie: Session=12cbcx...
 
 Tip
 ```plain
-subfinder -d hackerone.com -nW -silent | ./httprobe -c 70 -p 8080,8081,8089 | tee http_https.txt
+subfinder -d hackerone.com -nW -silent | ./httprobe -c 70 -p 80,443,8080,8081,8089 | tee http_https.txt
 cat http_https.txt | ./CorsMe -t 70
 ```
 ## Screenshot
