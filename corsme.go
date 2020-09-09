@@ -19,12 +19,14 @@ import (
 	"regexp"
 )
 
-
-var f,  _ = os.Create("error_requests.txt")
+var f *os.File
 var Threads int
 var header string
+var method string
 var wildcard bool 
- 
+var req *http.Request
+
+
 
 func Banner() {
 	color.HiGreen(`
@@ -33,7 +35,7 @@ func Banner() {
 | /  \/ ___  _ __ ___ | .  . | ___ 
 | |    / _ \| '__/ __|| |\/| |/ _ \
 | \__/\ (_) | |  \__ \| |  | |  __/
- \____/\___/|_|  |___/\_|  |_/\___| v1.2
+ \____/\___/|_|  |___/\_|  |_/\___| v1.8
 								   `)
 	color.HiRed("                 " + "Made with <3 by @shivangx01b")
 	
@@ -79,14 +81,23 @@ func custom_header(c *http.Client, header string, req *http.Request) {
 	req.Header.Set(h_name, v_name)
 }
 
+func add_method(req *http.Request, method string, u string) *http.Request {
+	if method != "GET" {
+		req, _ = http.NewRequest(method, u, nil)
+	} else {
 
-func requester(c *http.Client, u string, origins []string, header string) {
+		req, _ = http.NewRequest(method, u, nil)
+			
+	}
+
+	return req	
+}
+
+func requester(c *http.Client,  method string, u string, origins []string, header string) {
 	for _, p := range origins {
 
-		req, err := http.NewRequest("GET", u, nil)
-		if err != nil {
-			return
-		}
+		req = add_method(req, method, u)
+
 		req.Header.Set("Origin", p)
 		if header != " " {
 			custom_header(c, header, req)
@@ -98,7 +109,7 @@ func requester(c *http.Client, u string, origins []string, header string) {
 		}
 		if err != nil {
 			w := bufio.NewWriter(f)  
-			w.WriteString(u)
+			w.WriteString(u + "\n")
 			w.Flush()
 			return
 		}
@@ -169,7 +180,6 @@ func null() []string  {
 
 func thirdparties() []string {           
 	origins := []string{
-		"https://shivangx01b.github.io",
 		"http://jsbin.com",
 		"https://codepen.io",
 		"https://jsfiddle.net",
@@ -192,79 +202,92 @@ func spicalchars(things []string) []string {
 	return origins
 }
 
-func totalwaystotest(c *http.Client, u string, wildcard bool, header string)  { 	
+func totalwaystotest(c *http.Client, method string, u string, wildcard bool, header string)  { 	
 	things, _ := parser(u)
+
+	f, _ = os.Create("error_requests.txt")
 	
 	AnyOrigin := anyorigin(wildcard)
-	requester(c, u, AnyOrigin, header)
+	requester(c, method, u, AnyOrigin, header)
 	
 	Prefix := prefix(things)
-	requester(c, u, Prefix, header)
+	requester(c, method, u, Prefix, header)
 	
 	Suffix := suffix(things)
-	requester(c, u, Suffix, header)
+	requester(c, method, u, Suffix, header)
 	
 	Escaped := notescapedot(things)
-	requester(c, u, Escaped, header)
+	requester(c, method, u, Escaped, header)
 	
 	Null := null()
-	requester(c, u, Null, header)
+	requester(c, method, u, Null, header)
 
 	Third := thirdparties()
-	requester(c, u, Third, header)
+	requester(c, method, u, Third, header)
 
 	Specialchars := spicalchars(things)
-	requester(c, u, Specialchars, header)
+	requester(c, method, u, Specialchars, header)
 
 }
 
 
 func ParseArguments() {
-	flag.IntVar(&Threads, "t", 40, "Number of workers to use..default 40")
-	flag.BoolVar(&wildcard, "wildcard", false, "If enabled..then * is checked in Access-Control-Allow-Origin")	
-	flag.StringVar(&header, "header",  " ", "Add any custom header if required")
+	flag.IntVar(&Threads, "t", 40, "Number of workers to use..default 40. Ex: -t 50")
+	flag.BoolVar(&wildcard, "wildcard", false, "If enabled..then * is checked in Access-Control-Allow-Origin. Ex: -wildcard true")	
+	flag.StringVar(&header, "header",  " ", "Add any custom header if required. Ex: -header \"Cookie: Session=12cbcx....\"")
+	flag.StringVar(&method, "method",  "GET", "Add method name if required. Ex: -method PUT. Default \"GET\"")
 	flag.Parse()
 }
 
 
 func main() {
 	ParseArguments()
-	Banner()
-	color.HiBlue("\n[~] Total Tests.. 🛠")
-	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)   
-	s.Start()              
-	time.Sleep(2 * time.Second)                                  
-	s.Stop()
-	color.HiYellow("\n[>] Reflect Origin.. 🔍")
-	color.HiYellow("\n[>] Prefix Matches.. 🔍")
-	color.HiYellow("\n[>] Suffix Matches.. 🔍")
-	color.HiYellow("\n[>] Not Escaped Dots.. 🔍")
-	color.HiYellow("\n[>] Null.. 🔍")
-	color.HiYellow("\n[>] Common ThirdParties.. 🔍")
-	color.HiYellow("\n[>] Special Chars.. 🔍")
-	s.UpdateCharSet(spinner.CharSets[4]) 
-	s.Restart()
-	time.Sleep(2 * time.Second)
-	s.Stop()
-	urls := make(chan string, Threads)
-	processGroup := new(sync.WaitGroup)
-	processGroup.Add(Threads)
+	checkin, _ := os.Stdin.Stat()
+	if checkin.Mode() & os.ModeNamedPipe > 0 {
+		Banner()
+		if method != "GET" {
+			color.HiGreen("\n[~] Method: %s", method)
+		} else {
+			color.HiGreen("\n[~] Method: %s", method)
+		}
+		color.HiBlue("\n[~] Total Tests.. 🛠")
+		s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)   
+		s.Start()              
+		time.Sleep(2 * time.Second)                                  
+		s.Stop()
+		color.HiYellow("\n[>] Reflect Origin.. 🔍")
+		color.HiYellow("\n[>] Prefix Matches.. 🔍")
+		color.HiYellow("\n[>] Suffix Matches.. 🔍")
+		color.HiYellow("\n[>] Not Escaped Dots.. 🔍")
+		color.HiYellow("\n[>] Null.. 🔍")
+		color.HiYellow("\n[>] Common ThirdParties.. 🔍")
+		color.HiYellow("\n[>] Special Chars.. 🔍")
+		s.UpdateCharSet(spinner.CharSets[4]) 
+		s.Restart()
+		time.Sleep(2 * time.Second)
+		s.Stop()
+		urls := make(chan string, Threads)
+		processGroup := new(sync.WaitGroup)
+		processGroup.Add(Threads)
 
-	for i := 0; i < Threads; i++ {
-		c := getClient()
-		go func() {
-			defer processGroup.Done()
-			for u := range urls {
-				totalwaystotest(c, u, wildcard, header)
-			}
-		}()
+		for i := 0; i < Threads; i++ {
+			c := getClient()
+			go func() {
+				defer processGroup.Done()
+				for u := range urls {
+					totalwaystotest(c, method, u, wildcard, header)
+				}
+			}()
+		}
+
+		sc := bufio.NewScanner(os.Stdin)
+
+		for sc.Scan() {
+			urls <- sc.Text()
+		}
+		close(urls)
+		processGroup.Wait()
+	} else {
+		color.HiRed("\n[!] Check: Corsme -h for arguments")
 	}
-
-	sc := bufio.NewScanner(os.Stdin)
-
-	for sc.Scan() {
-		urls <- sc.Text()
-	}
-	close(urls)
-	processGroup.Wait()
 }
