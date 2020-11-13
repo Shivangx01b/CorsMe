@@ -45,6 +45,11 @@ Add header if required
 ```plain
 cat http_https.txt | ./CorsMe -t 70 -wildcard -header "Cookie: Session=12cbcx...."
 ```
+Save output in a file
+```plain
+cat http_https.txt | ./CorsMe -t 70 -output audit.logs
+```
+
 Add another method if required
 ```plain
 cat http_https.txt | ./CorsMe -t 70 -wildcard -header "Cookie: Session=12cbcx...." -method "POST"
