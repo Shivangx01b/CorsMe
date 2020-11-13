@@ -25,6 +25,8 @@ var header string
 var method string
 var wildcard bool 
 var req *http.Request
+var output string
+var result *os.File
 
 
 
@@ -35,7 +37,7 @@ func Banner() {
 | /  \/ ___  _ __ ___ | .  . | ___ 
 | |    / _ \| '__/ __|| |\/| |/ _ \
 | \__/\ (_) | |  \__ \| |  | |  __/
- \____/\___/|_|  |___/\_|  |_/\___| v1.8
+ \____/\___/|_|  |___/\_|  |_/\___| v1.9
 								   `)
 	color.HiRed("                 " + "Made with <3 by @shivangx01b")
 	
@@ -120,12 +122,18 @@ func requester(c *http.Client,  method string, u string, origins []string, heade
 		if acao == p {
 			color.HiRed("\n[-] Misconfiguration found!")
 			color.HiCyan("URL: %s", u)
-			color.HiGreen("Access-Control-Allow-Origin: %s\n", p)
+			color.HiGreen("Access-Control-Allow-Origin: %s", p)
+			res := bufio.NewWriter(result)
+			res.WriteString("\n" + "[-] Misconfiguration found!")
+			res.WriteString("\n" + "URL: "+ u)
+			res.WriteString("\n" + "Access-Control-Allow-Origin: "+ p)
 			
 				if acac == "true"{
 					color.HiGreen("Access-Control-Allow-Credentials: %s", acac)
+					res.WriteString("\n" + "Access-Control-Allow-Credentials: "+ acac)
 					
-				}							
+				}
+			res.Flush()						
 		
 		}
 	}
@@ -236,6 +244,7 @@ func ParseArguments() {
 	flag.BoolVar(&wildcard, "wildcard", false, "If enabled..then * is checked in Access-Control-Allow-Origin. Ex: -wildcard true")	
 	flag.StringVar(&header, "header",  " ", "Add any custom header if required. Ex: -header \"Cookie: Session=12cbcx....\"")
 	flag.StringVar(&method, "method",  "GET", "Add method name if required. Ex: -method PUT. Default \"GET\"")
+	flag.StringVar(&output, "output", " ", "Output to save as")
 	flag.Parse()
 }
 
@@ -245,6 +254,9 @@ func main() {
 	checkin, _ := os.Stdin.Stat()
 	if checkin.Mode() & os.ModeNamedPipe > 0 {
 		Banner()
+		if output != " " {
+			result, _ = os.Create(output)
+		}
 		if method != "GET" {
 			color.HiGreen("\n[~] Method: %s", method)
 		} else {
