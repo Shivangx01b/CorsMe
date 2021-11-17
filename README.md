@@ -25,7 +25,7 @@ A cors misconfiguration scanner tool based on golang with speed and precision in
 ## How to Install
 
 ```
-$ go get -u -v github.com/shivangx01b/CorsMe
+$ go install github.com/shivangx01b/CorsMe@latest
 ```
 ## Usage
 
